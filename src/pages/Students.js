@@ -1,48 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import StudentComponent from '../components/StudentComponent';
 
 function Students() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [showAll, setShowAll] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Using JSONPlaceholder as a public API
-        const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-        setUsers(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch student data. Please try again later.");
-        setLoading(false);
-      }
-    };
+  const students = [
+    { id: 1, name: 'Justine Ken Rioveros', course: 'BS Information Technology', year: '4th Year' },
+    { id: 2, name: 'Jeffry Duria', course: 'BS Information Technology', year: '4th Year' },
+    { id: 3, name: 'Darren Martin', course: 'BS Information Technology', year: '4th Year' },
+    { id: 4, name: 'Vin Cedrick Lamis', course: 'BS Information Technology', year: '4th Year' },
+    { id: 5, name: 'Alex Cruz', course: 'BS Computer Science', year: '3rd Year' },
+    { id: 6, name: 'Bianca Flores', course: 'BS Computer Science', year: '2nd Year' },
+    { id: 7, name: 'Carlo Mendoza', course: 'BS Computer Science', year: '1st Year' },
+    { id: 8, name: 'Diana Ramos', course: 'BS Computer Science', year: '4th Year' },
+  ];
 
-    fetchData();
-  }, []);
-
-  if (loading) return <div style={{ padding: '2rem' }}>Loading students...</div>;
-  if (error) return <div style={{ padding: '2rem', color: 'red' }}>{error}</div>;
+  const visibleStudents = showAll ? students : students.filter(s => s.course === 'BS Information Technology');
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h2>Students List (from API)</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {users.map(user => (
-          <li key={user.id} style={{ 
-            padding: '1rem', 
-            borderBottom: '1px solid #eee',
-            marginBottom: '0.5rem',
-            backgroundColor: '#f9f9f9'
-          }}>
-            <strong>{user.name}</strong> - {user.email}
-            <br />
-            <small>Company: {user.company.name}</small>
-          </li>
+      <h2>Students</h2>
+      <p>These are the real students stored in the application.</p>
+
+      <button
+        onClick={() => setShowAll(!showAll)}
+        style={{ padding: '0.5rem 1rem', cursor: 'pointer', marginBottom: '1rem' }}
+      >
+        {showAll ? 'Show BSIT Only' : 'Show All Students'}
+      </button>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '20px',
+        }}
+      >
+        {visibleStudents.map(student => (
+          <StudentComponent
+            key={student.id}
+            name={student.name}
+            course={student.course}
+            year={student.year}
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
